@@ -38,7 +38,7 @@ Running OMPL as a pre-processor for CHOMP
 Here, it is demonstrated that CHOMP can be used as a post-processing optimization technique for plans obtained by other planning algorithms. The intuition behind this is that some randomized planning algorithm produces an initial guess for CHOMP. CHOMP then takes this initial guess and further optimizes the trajectory.
 To achieve this, follow the steps:
 
-#. Open the ``ompl_planning_pipeline.launch`` file in the ``<robot_moveit_config>/launch`` folder of your robot. For the Panda robot it is this `file <https://github.com/ros-planning/panda_moveit_config/blob/melodic-devel/launch/ompl_planning_pipeline.launch.xml>`_. Edit this launch file, find the lines where ``<arg name="planning_adapters">`` is mentioned and change it to: ::
+1. Open the ``ompl_planning_pipeline.launch`` file in the ``<robot_moveit_config>/launch`` folder of your robot. For the Panda robot it is this `file <https://github.com/ros-planning/panda_moveit_config/blob/melodic-devel/launch/ompl_planning_pipeline.launch.xml>`_. Edit this launch file, find the lines where ``<arg name="planning_adapters">`` is mentioned and change it to: ::
 
     <arg name="planning_adapters"
          value="default_planner_request_adapters/FixWorkspaceBounds
@@ -48,15 +48,15 @@ To achieve this, follow the steps:
                 chomp/OptimizerAdapter
                 default_planner_request_adapters/AddTimeParameterization" />
 
-#. The values of the ``planning_adapters`` is the order in which the mentioned adapters are called / invoked. Order here matters. Inside the CHOMP adapter, a :moveit_codedir:`call <moveit_planners/chomp/chomp_optimizer_adapter/src/chomp_optimizer_adapter.cpp#L169>` to OMPL is made before invoking the CHOMP optimization solver, so CHOMP takes the initial path computed by OMPL as the starting point to further optimize it. 
+  a. The values of the ``planning_adapters`` is the order in which the mentioned adapters are called / invoked. Order here matters. Inside the CHOMP adapter, a :moveit_codedir:`call <moveit_planners/chomp/chomp_optimizer_adapter/src/chomp_optimizer_adapter.cpp#L169>` to OMPL is made before invoking the CHOMP optimization solver, so CHOMP takes the initial path computed by OMPL as the starting point to further optimize it.
 
-#. Find the line where ``<rosparam command="load" file="$(find panda_moveit_config)/config/ompl_planning.yaml"/>`` is mentioned and after this line, add the following: ::
+2. Find the line where ``<rosparam command="load" file="$(find panda_moveit_config)/config/ompl_planning.yaml"/>`` is mentioned and after this line, add the following: ::
 
     <rosparam command="load" file="$(find panda_moveit_config)/config/chomp_planning.yaml"/>
 
-#. These additions will add a CHOMP Optimization adapter and load the corresponding CHOMP planner's parameters. To do this with your own robot replace ``panda_moveit_config`` to ``<my_robot>_moveit_config`` of your robot.
+  a. These additions will add a CHOMP Optimization adapter and load the corresponding CHOMP planner's parameters. To do this with your own robot replace ``panda_moveit_config`` to ``<my_robot>_moveit_config`` of your robot.
 
-#. In the ``move_group.launch`` file of ``<robot_moveit_config>/launch`` folder for your robot, make sure that the default planner is ``ompl``.
+3. In the ``move_group.launch`` file of ``<robot_moveit_config>/launch`` folder for your robot, make sure that the default planner is ``ompl``.
 
 #. In the ``chomp_planning.yaml`` file of ``<robot_moveit_config>/config`` folder for your robot, add the following line: ::
 
@@ -74,7 +74,7 @@ Running CHOMP as a post-processor for STOMP
 Now, it is demonstrated that CHOMP can be used as a post-processing optimization technique for plans obtained by STOMP. The intuition behind this is that STOMP produces an initial path for CHOMP. CHOMP then takes this initial path and further optimizes this trajectory.
 To achieve this, follow the steps:
 
-#. Open the ``stomp_planning_pipeline.launch`` file in the ``<robot_moveit_config>/launch`` folder of your robot. For the Panda robot it is `this <https://github.com/ros-planning/panda_moveit_config/blob/melodic-devel/launch/stomp_planning_pipeline.launch.xml>`_ file. Edit this launch file, find the lines where ``<arg name="planning_adapters">`` is mentioned and change it to: ::
+1. Open the ``stomp_planning_pipeline.launch`` file in the ``<robot_moveit_config>/launch`` folder of your robot. For the Panda robot it is `this <https://github.com/ros-planning/panda_moveit_config/blob/melodic-devel/launch/stomp_planning_pipeline.launch.xml>`_ file. Edit this launch file, find the lines where ``<arg name="planning_adapters">`` is mentioned and change it to: ::
 
     <arg name="planning_adapters" value="default_planner_request_adapters/AddTimeParameterization
                    default_planner_request_adapters/FixWorkspaceBounds
@@ -83,15 +83,15 @@ To achieve this, follow the steps:
                    default_planner_request_adapters/FixStartStatePathConstraints
                    default_planner_request_adapters/CHOMPOptimizationAdapter" />
 
-#. The values of the ``planning_adapters`` is the order in which the mentioned adapters are called / invoked. Order here matters. Inside the CHOMP adapter, a call to STOMP is made before invoking the CHOMP optimization solver, so CHOMP takes the initial path computed by STOMP as the starting point to further optimize it.
+  a. The values of the ``planning_adapters`` is the order in which the mentioned adapters are called / invoked. Order here matters. Inside the CHOMP adapter, a call to STOMP is made before invoking the CHOMP optimization solver, so CHOMP takes the initial path computed by STOMP as the starting point to further optimize it.
 
-#. Find the line where ``<rosparam command="load" file="$(find panda_moveit_config)/config/stomp_planning.yaml"/>`` is mentioned and after this line, add the following: ::
+2. Find the line where ``<rosparam command="load" file="$(find panda_moveit_config)/config/stomp_planning.yaml"/>`` is mentioned and after this line, add the following: ::
 
     <rosparam command="load" file="$(find panda_moveit_config)/config/chomp_planning.yaml"/>
 
-#. These additions will add a CHOMP Optimization adapter and load the corresponding CHOMP planner's parameters. To do this with your own robot replace ``panda_moveit_config`` to ``<my_robot>_moveit_config`` of your robot.
+  a. These additions will add a CHOMP Optimization adapter and load the corresponding CHOMP planner's parameters. To do this with your own robot replace ``panda_moveit_config`` to ``<my_robot>_moveit_config`` of your robot.
 
-#. In the ``move_group.launch`` file of ``<robot_moveit_config>/launch`` folder for your robot, make sure that the default planner is ``stomp``.
+3. In the ``move_group.launch`` file of ``<robot_moveit_config>/launch`` folder for your robot, make sure that the default planner is ``stomp``.
 
 #. In the ``chomp_planning.yaml`` file of ``<robot_moveit_config>/config`` folder for your robot, add the following line: ::
 
